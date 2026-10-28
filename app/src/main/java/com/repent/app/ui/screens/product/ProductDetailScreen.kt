@@ -16,7 +16,7 @@ import com.repent.app.data.repository.ApiResult
 import com.repent.app.ui.components.ErrorState
 import com.repent.app.ui.components.GoldButton
 import com.repent.app.ui.components.LoadingState
-import com.repent.app.ui.components.productImageUrl
+import com.repent.app.ui.components.productImageModel
 import com.repent.app.ui.rememberRepentApp
 import com.repent.app.ui.theme.RepentGold
 
@@ -45,7 +45,7 @@ fun ProductDetailScreen(
             val p = product!!
             Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
                 AsyncImage(
-                    model = productImageUrl(p.image),
+                    model = productImageModel(p.image),
                     contentDescription = p.name,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxWidth().height(320.dp),

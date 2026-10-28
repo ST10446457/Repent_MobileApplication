@@ -19,16 +19,39 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.repent.app.BuildConfig
+import com.repent.app.R
 import com.repent.app.data.model.Product
 import com.repent.app.ui.theme.RepentBlack
 import com.repent.app.ui.theme.RepentGold
 import com.repent.app.ui.theme.RepentGray
 import com.repent.app.ui.theme.RepentWhite
 
-/** Builds the full image URL from a product's `image` filename, served by the PHP app itself. */
-fun productImageUrl(image: String?): String {
-    if (image.isNullOrBlank()) return ""
-    return BuildConfig.BASE_URL.trimEnd('/') + "/assets/images/" + image
+/**
+ * Prefer the product photos bundled with the APK: they work on tablets even
+ * when the developer's XAMPP computer is switched off or on another network.
+ * Unknown images may still load from an absolute URL or the configured server.
+ */
+fun productImageModel(image: String?): Any? {
+    if (image.isNullOrBlank()) return null
+    val name = image.substringAfterLast('/').substringBefore('?').lowercase()
+    val drawable = when (name) {
+        "tshirt-white.jpg" -> R.drawable.repent_tshirt_white
+        "products-collection.jpg" -> R.drawable.repent_products_collection
+        "products-flat.jpg" -> R.drawable.repent_products_flat
+        "people-wearing.jpg" -> R.drawable.repent_people_wearing
+        "hoodies-collection.jpg" -> R.drawable.repent_hoodies_collection
+        "cap-coral.jpg" -> R.drawable.repent_cap_coral
+        "cap-olive.jpg" -> R.drawable.repent_cap_olive
+        "cap-yellow.jpg" -> R.drawable.repent_cap_yellow
+        "cap-mint.jpg" -> R.drawable.repent_cap_mint
+        "cap-khaki.jpg" -> R.drawable.repent_cap_khaki
+        else -> null
+    }
+    if (drawable != null) return drawable
+    if (image.startsWith("https://", ignoreCase = true) ||
+        image.startsWith("http://", ignoreCase = true)
+    ) return image
+    return BuildConfig.BASE_URL.trimEnd('/') + "/assets/images/" + image.trimStart('/')
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -144,7 +167,7 @@ fun ProductCard(
     ) {
         Box {
             AsyncImage(
-                model = productImageUrl(product.image),
+                model = productImageModel(product.image),
                 contentDescription = product.name,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxWidth().aspectRatio(1f),

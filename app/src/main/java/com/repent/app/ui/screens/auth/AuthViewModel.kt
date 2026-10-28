@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.repent.app.data.repository.ApiResult
 import com.repent.app.data.repository.AuthRepository
+import com.repent.app.data.firebase.AccountValidation
 import kotlinx.coroutines.launch
 
 class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
@@ -34,11 +35,8 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
 
     fun register(fullname: String, email: String, password: String, confirm: String, onSuccess: () -> Unit) {
         errorMessage = null
-        when {
-            fullname.isBlank() -> errorMessage = "Full name is required."
-            password.length < 6 -> errorMessage = "Password must be at least 6 characters long."
-            password != confirm -> errorMessage = "Passwords do not match."
-            else -> {
+        when (val validation = AccountValidation.registrationError(fullname, email, password, confirm)) {
+            null -> {
                 viewModelScope.launch {
                     isLoading = true
                     when (val result = repository.register(fullname.trim(), email.trim(), password)) {
@@ -48,6 +46,7 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
                     isLoading = false
                 }
             }
+            else -> errorMessage = validation
         }
     }
 }

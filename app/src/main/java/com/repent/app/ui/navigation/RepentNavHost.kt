@@ -37,6 +37,8 @@ import com.repent.app.ui.screens.orders.OrdersScreen
 import com.repent.app.ui.screens.prayer.PrayerScreen
 import com.repent.app.ui.screens.product.ProductDetailScreen
 import com.repent.app.ui.screens.profile.ProfileScreen
+import com.repent.app.ui.screens.profile.SettingsScreen
+import com.repent.app.ui.screens.profile.HelpScreen
 import com.repent.app.ui.screens.shop.ShopScreen
 import com.repent.app.ui.screens.shop.ShopViewModel
 import com.repent.app.ui.screens.splash.SplashScreen
@@ -249,8 +251,24 @@ fun RepentNavHost(navController: NavHostController) {
                     onNavigateToLogin = { navController.navigate(Screen.Login.route) },
                     onNavigateToOrders = { navController.navigate(Screen.Orders.route) },
                     onNavigateToAdmin = { navController.navigate(Screen.Admin.route) },
+                    onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
+                    onNavigateToHelp = { navController.navigate(Screen.Help.route) },
                     onLoggedOut = { },
                 )
+            }
+
+            composable(Screen.Settings.route) {
+                Column {
+                    RepentTopBar(title = "Settings", navigationIcon = { BackIcon(navController) })
+                    SettingsScreen()
+                }
+            }
+
+            composable(Screen.Help.route) {
+                Column {
+                    RepentTopBar(title = "Help", navigationIcon = { BackIcon(navController) })
+                    HelpScreen()
+                }
             }
 
             composable(Screen.Admin.route) {
