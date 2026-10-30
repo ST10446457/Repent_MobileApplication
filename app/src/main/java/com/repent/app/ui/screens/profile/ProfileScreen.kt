@@ -18,6 +18,8 @@ fun ProfileScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToOrders: () -> Unit,
     onNavigateToAdmin: () -> Unit,
+    onNavigateToSettings: () -> Unit,
+    onNavigateToHelp: () -> Unit,
     onLoggedOut: () -> Unit,
 ) {
     val app = rememberRepentApp()
@@ -34,12 +36,16 @@ fun ProfileScreen(
                 Text("You're not signed in", style = MaterialTheme.typography.titleLarge)
                 Spacer(Modifier.height(16.dp))
                 GoldButton(text = "Login / Create Account", onClick = onNavigateToLogin)
+                Spacer(Modifier.height(12.dp))
+                OutlineDarkButton(text = "Help & Support", onClick = onNavigateToHelp)
             }
         } else {
             ProfileContent(
                 user = user!!,
                 onNavigateToOrders = onNavigateToOrders,
                 onNavigateToAdmin = onNavigateToAdmin,
+                onNavigateToSettings = onNavigateToSettings,
+                onNavigateToHelp = onNavigateToHelp,
                 onLogout = {
                     scope.launch {
                         app.authRepository.logout()
@@ -56,6 +62,8 @@ private fun ProfileContent(
     user: User,
     onNavigateToOrders: () -> Unit,
     onNavigateToAdmin: () -> Unit,
+    onNavigateToSettings: () -> Unit,
+    onNavigateToHelp: () -> Unit,
     onLogout: () -> Unit,
 ) {
     Text("My Account", style = MaterialTheme.typography.headlineMedium)
@@ -65,6 +73,10 @@ private fun ProfileContent(
     Spacer(Modifier.height(24.dp))
 
     OutlineDarkButton(text = "My Orders", onClick = onNavigateToOrders)
+    Spacer(Modifier.height(12.dp))
+    OutlineDarkButton(text = "Account Settings", onClick = onNavigateToSettings)
+    Spacer(Modifier.height(12.dp))
+    OutlineDarkButton(text = "Help & Support", onClick = onNavigateToHelp)
     Spacer(Modifier.height(12.dp))
     if (user.isAdmin) {
         OutlineDarkButton(text = "Admin Dashboard", onClick = onNavigateToAdmin)

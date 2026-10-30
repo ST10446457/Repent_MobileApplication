@@ -1,5 +1,12 @@
 # REPENT† — Android App
 
+> **Firebase migration (October 2026):** This version uses Firebase
+> Authentication and Cloud Firestore for the main customer workflows.
+> Historical PHP API instructions below apply to the original app. Start
+> with [RUN_ON_PHONE.md](RUN_ON_PHONE.md) and
+> [FIREBASE_MIGRATION.md](FIREBASE_MIGRATION.md). Orders are unverified demo
+> requests, not real payments. Build and phone testing are pending.
+
 A native Android (Kotlin + Jetpack Compose) client for the REPENT† faith-based
 clothing site, talking to a PHP REST API added to your existing project.
 

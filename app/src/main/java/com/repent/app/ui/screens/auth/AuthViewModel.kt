@@ -7,11 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.repent.app.data.repository.ApiResult
 import com.repent.app.data.repository.AuthRepository
+import com.repent.app.data.firebase.AccountValidation
 import kotlinx.coroutines.launch
 
 class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
 
     var isLoading by mutableStateOf(false)
+        private set
+    var successMessage by mutableStateOf<String?>(null)
         private set
     var errorMessage by mutableStateOf<String?>(null)
         private set
@@ -34,20 +37,19 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
 
     fun register(fullname: String, email: String, password: String, confirm: String, onSuccess: () -> Unit) {
         errorMessage = null
-        when {
-            fullname.isBlank() -> errorMessage = "Full name is required."
-            password.length < 6 -> errorMessage = "Password must be at least 6 characters long."
-            password != confirm -> errorMessage = "Passwords do not match."
-            else -> {
+        successMessage = null
+        when (val validation = AccountValidation.registrationError(fullname, email, password, confirm)) {
+            null -> {
                 viewModelScope.launch {
                     isLoading = true
                     when (val result = repository.register(fullname.trim(), email.trim(), password)) {
-                        is ApiResult.Success -> onSuccess()
+                        is ApiResult.Success -> successMessage = "Account created. Check your email and verify it before signing in."
                         is ApiResult.Failure -> errorMessage = result.message
                     }
                     isLoading = false
                 }
             }
+            else -> errorMessage = validation
         }
     }
 }

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "459601639619",
+    "project_id": "repent-48fda",
+    "storage_bucket": "repent-48fda.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:459601639619:android:86834432049cefca174a76",
+        "android_client_info": {
+          "package_name": "com.repent.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "459601639619-br9222f21jn5l1qd8199cpbjmfeegjog.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.repent.app",
+            "certificate_hash": "683fc26532d579abb9f5031e2e2888df5bc68958"
+          }
+        },
+        {
+          "client_id": "459601639619-ilojtq005r4ro0ht9mbgdb1q6kd8hubq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDviWDR8fE91swvE0ofiFDxVZXOggcC2Qk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "459601639619-ilojtq005r4ro0ht9mbgdb1q6kd8hubq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
