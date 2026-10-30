@@ -1,10 +1,22 @@
 package com.repent.app.data.firebase
 
 object AccountValidation {
+    // Format validation only. Email ownership is confirmed through Firebase's verification email.
+    private val local = Regex("^[A-Za-z0-9](?:[A-Za-z0-9.!#$%&'*+/=?^`{|}~-]{0,62}[A-Za-z0-9])?$")
+    private val domainLabel = Regex("^[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?$")
+
     fun validEmail(value: String): Boolean {
         val email = value.trim()
-        return email.length <= 254 && email.contains('@') &&
-            email.substringAfter('@').contains('.') && !email.contains(' ')
+        if (email.length !in 6..254 || email.any { it.isWhitespace() }) return false
+        if (email.count { it == '@' } != 1) return false
+        val (mailbox, domain) = email.split('@')
+        if (mailbox.length > 64 || !local.matches(mailbox) ||
+            mailbox.contains("..") || mailbox.startsWith('.') || mailbox.endsWith('.')) return false
+        val labels = domain.split('.')
+        if (labels.size < 2 || labels.any { !domainLabel.matches(it) }) return false
+        val tld = labels.last()
+        if (tld.length < 2 || !tld.all { it.isLetter() }) return false
+        return true
     }
 
     fun registrationError(name: String, email: String, password: String, confirm: String): String? = when {
