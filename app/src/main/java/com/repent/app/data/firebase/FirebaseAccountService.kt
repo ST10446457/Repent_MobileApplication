@@ -17,7 +17,7 @@ class FirebaseAccountService(
 ) {
     suspend fun register(name: String, email: String, password: String) {
         require(name.isNotBlank()) { "Please enter your full name." }
-        require(email.contains('@')) { "Please enter a valid email address." }
+        require(AccountValidation.validEmail(email)) { "Please enter a valid email address." }
         require(password.length >= 6) { "Your password must be at least 6 characters." }
 
         val account = auth.createUserWithEmailAndPassword(email.trim(), password).await()
@@ -31,15 +31,22 @@ class FirebaseAccountService(
                 "createdAt" to FieldValue.serverTimestamp(),
             ),
         ).await()
+        user.sendEmailVerification().await()
+        auth.signOut()
     }
 
     suspend fun login(email: String, password: String) {
         require(email.isNotBlank() && password.isNotBlank()) { "Enter your email and password." }
-        auth.signInWithEmailAndPassword(email.trim(), password).await()
+        val result = auth.signInWithEmailAndPassword(email.trim(), password).await()
+        if (result.user?.isEmailVerified != true) {
+            result.user?.sendEmailVerification()?.await()
+            auth.signOut()
+            throw IllegalStateException("Please verify your email before signing in. Check your inbox.")
+        }
     }
 
     suspend fun sendPasswordReset(email: String) {
-        require(email.contains('@')) { "Please enter a valid email address." }
+        require(AccountValidation.validEmail(email)) { "Please enter a valid email address." }
         auth.sendPasswordResetEmail(email.trim()).await()
     }
 
