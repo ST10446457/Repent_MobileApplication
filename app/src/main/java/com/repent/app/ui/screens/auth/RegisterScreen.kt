@@ -42,6 +42,9 @@ fun RegisterScreen(
         Text("Join the REPENT† community today", style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.height(32.dp))
 
+        viewModel.successMessage?.let {
+            Text(it, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(bottom = 12.dp))
+        }
         viewModel.errorMessage?.let {
             Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(bottom = 12.dp))
         }

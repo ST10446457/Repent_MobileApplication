@@ -10,8 +10,11 @@ class AccountValidationTest {
     }
 
     @Test fun rejectsMalformedEmail() {
-        assertFalse(AccountValidation.validEmail("not-an-email"))
-        assertFalse(AccountValidation.validEmail("a@b"))
+        listOf("not-an-email", "a@b", "a@@b.com", "a..b@example.com",
+            "user@-example.com", "user@example..com", "user@example.c",
+            "user name@example.com", "user@domain.com.", "user@domain.123").forEach {
+            assertFalse("Unexpectedly accepted: $it", AccountValidation.validEmail(it))
+        }
     }
 
     @Test fun rejectsShortPassword() {
@@ -29,5 +32,9 @@ class AccountValidationTest {
     @Test fun requiresDeliveryDetails() {
         assertNotNull(AccountValidation.deliveryError("", "Pretoria", "0001", "0123456789"))
         assertNull(AccountValidation.deliveryError("123 Road", "Pretoria", "0001", "0123456789"))
+    }
+
+    @Test fun unusualButPossibleDomainNeedsVerification() {
+        assertTrue(AccountValidation.validEmail("12@email.co.za.com"))
     }
 }

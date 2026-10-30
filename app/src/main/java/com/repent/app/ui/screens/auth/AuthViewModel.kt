@@ -14,6 +14,8 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
 
     var isLoading by mutableStateOf(false)
         private set
+    var successMessage by mutableStateOf<String?>(null)
+        private set
     var errorMessage by mutableStateOf<String?>(null)
         private set
 
@@ -35,12 +37,13 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
 
     fun register(fullname: String, email: String, password: String, confirm: String, onSuccess: () -> Unit) {
         errorMessage = null
+        successMessage = null
         when (val validation = AccountValidation.registrationError(fullname, email, password, confirm)) {
             null -> {
                 viewModelScope.launch {
                     isLoading = true
                     when (val result = repository.register(fullname.trim(), email.trim(), password)) {
-                        is ApiResult.Success -> onSuccess()
+                        is ApiResult.Success -> successMessage = "Account created. Check your email and verify it before signing in."
                         is ApiResult.Failure -> errorMessage = result.message
                     }
                     isLoading = false
