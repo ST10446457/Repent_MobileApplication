@@ -1,5 +1,8 @@
 package com.repent.app.ui.screens.checkout
 
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
@@ -21,6 +24,7 @@ fun CheckoutScreen(
 ) {
     val app = rememberRepentApp()
     val viewModel = remember { CheckoutViewModel(app.orderRepository, app.cartStore) }
+    val context = LocalContext.current
     val cartItems by app.cartStore.cartFlow.collectAsState(initial = emptyList())
 
     val subtotal = cartItems.sumOf { it.lineTotal }
@@ -74,6 +78,7 @@ fun CheckoutScreen(
 
         Spacer(Modifier.height(24.dp))
         Text("Payment Method", style = MaterialTheme.typography.titleMedium)
+        Text("Card checkout uses PayFast sandbox test wallet; no real card is charged.", style = MaterialTheme.typography.bodySmall)
         Column(Modifier.selectableGroup()) {
             listOf("eft" to "EFT / Bank Transfer", "card" to "Credit / Debit Card").forEach { (value, label) ->
                 Row(
@@ -107,10 +112,17 @@ fun CheckoutScreen(
 
         Spacer(Modifier.height(24.dp))
         GoldButton(
-            text = if (viewModel.isSubmitting) "Placing Order…" else "Place Order",
+            text = if (viewModel.isSubmitting) "Placing Order…" else if (paymentMethod == "card") "Continue to PayFast Sandbox" else "Place Order",
             enabled = !viewModel.isSubmitting && cartItems.isNotEmpty(),
             onClick = {
-                viewModel.placeOrder(cartItems, address, city, postalCode, phone, paymentMethod, onOrderPlaced)
+                if (paymentMethod == "card") {
+                    viewModel.startPayfastCheckout(cartItems, address, city, postalCode, phone) { url ->
+                        // Hosted PayFast sandbox: no PAN/card data enters the application.
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                    }
+                } else {
+                    viewModel.placeOrder(cartItems, address, city, postalCode, phone, paymentMethod, onOrderPlaced)
+                }
             },
         )
         Spacer(Modifier.height(24.dp))
