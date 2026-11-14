@@ -9,6 +9,7 @@ import com.repent.app.data.local.CartStore
 import com.repent.app.data.model.CartItem
 import com.repent.app.data.model.CheckoutItem
 import com.repent.app.data.repository.ApiResult
+import com.repent.app.data.repository.PayfastRepository
 import com.repent.app.data.repository.OrderRepository
 import kotlinx.coroutines.launch
 
@@ -21,6 +22,27 @@ class CheckoutViewModel(
         private set
     var errorMessage by mutableStateOf<String?>(null)
         private set
+
+    fun startPayfastCheckout(
+        cartItems: List<CartItem>,
+        address: String, city: String, postalCode: String, phone: String,
+        onCheckoutReady: (String) -> Unit,
+    ) {
+        errorMessage = null
+        if (cartItems.isEmpty() || listOf(address, city, postalCode, phone).any { it.isBlank() }) {
+            errorMessage = "Please complete your cart and delivery details."
+            return
+        }
+        viewModelScope.launch {
+            isSubmitting = true
+            val items = cartItems.map { CheckoutItem(it.productId, it.quantity) }
+            when (val result = PayfastRepository().createCheckout(items, address, city, postalCode, phone)) {
+                is ApiResult.Success -> onCheckoutReady(result.data)
+                is ApiResult.Failure -> errorMessage = result.message
+            }
+            isSubmitting = false
+        }
+    }
 
     fun placeOrder(
         cartItems: List<CartItem>,
