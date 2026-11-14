@@ -59,6 +59,9 @@ fun OrdersScreen() {
                     }
                     Spacer(Modifier.height(8.dp))
                     Text("Total: R${order.total.toInt()}", fontWeight = FontWeight.SemiBold)
+                    if (order.paymentMethod == "payfast") {
+                        Text("PayFast payment: ${order.paymentStatus ?: "pending"}", style = MaterialTheme.typography.bodyMedium)
+                    }
                 }
             }
         }
