@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.repent.app.data.model.Devotional
 import com.repent.app.data.repository.ApiResult
 import com.repent.app.ui.components.ErrorState
+import com.repent.app.ui.components.EmptyState
 import com.repent.app.ui.components.LoadingState
 import com.repent.app.ui.rememberRepentApp
 import com.repent.app.ui.theme.RepentCream
@@ -37,6 +38,7 @@ fun DevotionalScreen() {
     when {
         loading -> LoadingState()
         error != null -> ErrorState(error ?: "Could not load devotionals.")
+        devotionals.isEmpty() -> EmptyState("📖", "No devotionals yet", "Devotionals will appear here when published to Firestore.")
         else -> LazyColumn(Modifier.fillMaxSize().padding(16.dp)) {
             items(devotionals, key = { it.id }) { d ->
                 Column(

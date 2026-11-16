@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.repent.app.ui.components.EmptyState
 import com.repent.app.ui.components.GoldButton
-import com.repent.app.ui.components.productImageUrl
+import com.repent.app.ui.components.productImageModel
 import com.repent.app.ui.rememberRepentApp
 import com.repent.app.ui.theme.RepentGray
 import com.repent.app.ui.theme.RepentGreen
@@ -54,7 +54,7 @@ fun CartScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     AsyncImage(
-                        model = productImageUrl(item.image),
+                        model = productImageModel(item.image),
                         contentDescription = item.name,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.size(64.dp).clip(RoundedCornerShape(6.dp)),
