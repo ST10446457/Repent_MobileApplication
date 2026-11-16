@@ -22,6 +22,10 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        // Public HTTPS Firebase Function URL. This is NOT a merchant secret.
+        buildConfigField("String", "PAYFAST_API_BASE_URL",
+            "\"https://europe-west1-repent-48fda.cloudfunctions.net/repentPayfast\"")
+
         // Local XAMPP website address.
         // Change the IP address when testing on your local network.
         buildConfigField(

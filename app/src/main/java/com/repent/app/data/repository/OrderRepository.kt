@@ -76,6 +76,7 @@ class OrderRepository(@Suppress("UNUSED_PARAMETER") sessionManager: SessionManag
                 phone = doc.getString("phone"), paymentMethod = doc.getString("paymentMethod"),
                 status = doc.getString("status") ?: "pending",
                 createdAt = doc.getTimestamp("createdAt")?.toDate()?.toString(),
+                paymentStatus = doc.getString("paymentStatus"),
                 items = raw.map { item ->
                     OrderItem(
                         productId = (item["productId"] as? Number)?.toInt() ?: 0,

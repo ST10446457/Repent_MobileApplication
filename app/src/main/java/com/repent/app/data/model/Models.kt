@@ -117,6 +117,7 @@ data class Order(
     val status: String,
     @SerializedName("created_at") val createdAt: String?,
     val items: List<OrderItem> = emptyList(),
+    val paymentStatus: String? = null,
 )
 
 data class OrdersResponse(
